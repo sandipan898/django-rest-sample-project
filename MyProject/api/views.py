@@ -13,7 +13,7 @@ from rest_framework import status
 # Create your views here.
 
 # @csrf_exempt #allows post requests without csrf token
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST']) # decorating views with django-rest-framework api views to add special functionalities
 def article_list(request):
 
     if request.method == 'GET':
@@ -34,7 +34,7 @@ def article_list(request):
 
 
 # @csrf_exempt
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['GET', 'PUT', 'DELETE']) # decorating views with django-rest-framework api views to add special functionalities
 def article_detail(request, pk):
 
     try:
