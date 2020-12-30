@@ -24,7 +24,38 @@ from django.shortcuts import get_object_or_404
 # Create your views here.
 
 
+
+""""""""""""""""""""" Class Based Views """""""""""""""""""""
+
+
+
+class ArticleModelViewSet(viewsets.ModelViewSet):
+    """ 
+        Inherits from Model viewsets where by defaults all the methods are defined 
+    """
+    serializer_class = ArticleSerializer
+    queryset = Article.objects.all()
+
+
+
+class ArticleGenericViewSet(viewsets.GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin, 
+                            mixins.UpdateModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin):
+    """ 
+        Inherits from generic viewsets whwere we can just implements the generic 
+        operatios just by inheriting the mixins classes 
+    """
+    serializer_class = ArticleSerializer
+    queryset = Article.objects.all()
+
+
+########################################################
+
+
 class ArticleViewSet(viewsets.ViewSet):
+    """ 
+        This is a basic ViewSet class. 
+        Here we have to implement the methods on our own 
+    """
     
     def list(self, request):
         articles = Article.objects.all()
@@ -55,7 +86,7 @@ class ArticleViewSet(viewsets.ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-""""""""""""""""""""" Class Based Views """""""""""""""""""""
+########################################################
 
 
 class GenericArticleView(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin,
@@ -84,6 +115,8 @@ class GenericArticleView(generics.GenericAPIView, mixins.ListModelMixin, mixins.
     def delete(self, request, id):
         return self.destroy(request, id)
 
+
+########################################################
 
 
 class ArticleAPIView(APIView):
