@@ -18,7 +18,41 @@ from rest_framework import mixins
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
+from rest_framework import viewsets
+from django.shortcuts import get_object_or_404
+
 # Create your views here.
+
+
+class ArticleViewSet(viewsets.ViewSet):
+    
+    def list(self, request):
+        articles = Article.objects.all()
+        serializer = ArticleSerializer(articles, many=True) # serializing all articles into objects
+        return Response(serializer.data) # takes serialized data and sends response in JSON format
+
+    def create(self, request):
+        serializer = ArticleSerializer(data=request.data) # serializing in comming request data 
+
+        if serializer.is_valid(): # checking validity
+            serializer.save() # saving the serialized data into model instance
+            return Response(serializer.data, status=status.HTTP_201_CREATED) # takes serialized data and sends response in JSON format
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) # returning error 
+
+    def retrieve(self, request, pk=None):
+        queryset = Article.objects.all()
+        article = get_object_or_404(queryset, pk=pk)
+        serializer = ArticleSerializer(article) # serializing all articles into objects
+        return Response(serializer.data) # takes serialized data and sends response in JSON format
+
+    def update(self, request, pk=None):
+        article = Article.objects.get(pk=pk)        
+        serializer = ArticleSerializer(article, data=request.data) # serializing the article object with the parsed data 
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 """"""""""""""""""""" Class Based Views """""""""""""""""""""
